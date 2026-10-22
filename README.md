@@ -76,6 +76,36 @@ Download the dataset from the [Kaggle page](https://www.kaggle.com/datasets/rodo
 uvx kaggle datasets download -d rodolfomendes/abalone-dataset -p data --unzip
 ```
 
+## 📓 1. Exploration and Experiments
+
+The notebooks can be run with VS Code / Jupyter using the `.venv` kernel, or with
+`uv run --with jupyter jupyter lab`.
+
+- [`notebooks/eda.ipynb`](notebooks/eda.ipynb): data quality, target distribution, effect of the sex, correlations
+  and anomalies (4 impossible heights removed).
+- [`notebooks/modelling.ipynb`](notebooks/modelling.ipynb): comparison of 6 models (5-fold cross-validation and
+  test set), every run tracked with MLflow. To browse the experiments:
+
+  ```bash
+  cd notebooks
+  uv run mlflow ui --backend-store-uri sqlite:///mlflow.db  # then open http://127.0.0.1:5000
+  ```
+
+## 📈 Model Performance
+
+Test set (20% of the data, 835 abalones):
+
+| Model | CV RMSE | Test RMSE | Test MAE | Test R² | Size |
+|---|---|---|---|---|---|
+| Mean baseline | 3.16 | 3.46 | 2.54 | 0.00 | 2 KB |
+| Linear regression | 2.18 | 2.23 | 1.58 | 0.59 | 2 KB |
+| Random forest | 2.13 | 2.20 | 1.52 | 0.60 | 14 MB |
+| **Gradient boosting (selected)** | 2.17 | **2.19** | 1.52 | **0.60** | 0.4 MB |
+
+The gradient boosting model was selected: its accuracy matches the random forest's (the difference is within the
+cross-validation noise), and it is about 35 times lighter to version and ship in the Docker image. The predictions
+are off by about 1.5 years on average; old abalones are underestimated.
+
 ## ✅ Code Quality
 
 ```bash
