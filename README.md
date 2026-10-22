@@ -91,15 +91,46 @@ The notebooks can be run with VS Code / Jupyter using the `.venv` kernel, or wit
   uv run mlflow ui --backend-store-uri sqlite:///mlflow.db  # then open http://127.0.0.1:5000
   ```
 
-## 🤖 2. Training Pipeline
+## 🤖 2. Training Pipeline (Prefect)
 
-The training pipeline loads and cleans the data, trains the model, logs its test metrics and saves the fitted
-pipeline (one-hot encoder + model) to `src/web_service/local_objects/model.pkl`. Training is reproducible (fixed
-random seeds).
+The training pipeline is a Prefect flow: it loads and cleans the data, trains the model, logs its test metrics and
+saves the fitted pipeline (one-hot encoder + model) to `src/web_service/local_objects/model.pkl`. Training is
+reproducible (fixed random seeds).
+
+### Train the model once
 
 ```bash
 uv run python -m src.modelling.main data/abalone.csv
 ```
+
+### Visualize the flow runs in the Prefect UI
+
+```bash
+# Terminal 1: start the Prefect server, then open the UI at http://127.0.0.1:4200
+uv run prefect server start
+
+# Terminal 2: send the flow runs to this server, then run the training flow
+uv run prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
+uv run python -m src.modelling.main data/abalone.csv
+```
+
+Each run shows its tasks, logs and a `abalone-model-metrics` artifact with the test metrics.
+
+### Retrain the model regularly (Prefect deployment)
+
+```bash
+# Terminal 2 (with the Prefect server still running): serve the deployment
+uv run python -m src.modelling.deploy
+```
+
+This creates the `abalone-model-retraining` deployment, scheduled **every Monday at 02:00**, and keeps a process
+polling for its scheduled runs. To trigger a run right away (or use "Quick run" in the UI):
+
+```bash
+uv run prefect deployment run 'train-abalone-model/abalone-model-retraining'
+```
+
+> Run these commands from the root of the repository.
 
 ## 📈 Model Performance
 

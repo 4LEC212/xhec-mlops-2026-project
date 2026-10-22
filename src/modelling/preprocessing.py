@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pandas as pd
+from prefect import task
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -18,6 +19,7 @@ from src.modelling.config import (
 )
 
 
+@task(name="Load data")
 def load_data(path: Path) -> pd.DataFrame:
     """Read the abalone CSV file and rename its columns to snake_case.
 
@@ -30,6 +32,7 @@ def load_data(path: Path) -> pd.DataFrame:
     return pd.read_csv(path).rename(columns=COLUMNS_MAPPING)
 
 
+@task(name="Clean data")
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """Remove the abalones with an impossible height (0 or above MAX_HEIGHT).
 
@@ -43,6 +46,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     return df[has_valid_height].reset_index(drop=True)
 
 
+@task(name="Split data")
 def split_data(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """Split the dataset into train and test sets of features and target.
 

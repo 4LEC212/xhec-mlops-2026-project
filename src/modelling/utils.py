@@ -4,7 +4,10 @@ import pickle
 from pathlib import Path
 from typing import Any
 
+from prefect import task
 
+
+@task(name="Pickle object")
 def pickle_object(obj: Any, path: Path) -> None:
     """Save an object to disk with pickle, creating the parent folders if needed.
 
