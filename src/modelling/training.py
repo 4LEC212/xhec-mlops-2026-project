@@ -1,6 +1,7 @@
 """Model training task of the training flow."""
 
 import pandas as pd
+from prefect import task
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.pipeline import Pipeline
 
@@ -8,6 +9,7 @@ from src.modelling.config import MODEL_PARAMS, RANDOM_STATE
 from src.modelling.preprocessing import build_preprocessor
 
 
+@task(name="Train model")
 def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> Pipeline:
     """Fit the preprocessing and the gradient boosting model on the training set.
 

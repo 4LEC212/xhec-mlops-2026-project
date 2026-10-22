@@ -2,10 +2,12 @@
 
 import numpy as np
 import pandas as pd
+from prefect import task
 from sklearn.metrics import mean_absolute_error, r2_score, root_mean_squared_error
 from sklearn.pipeline import Pipeline
 
 
+@task(name="Predict")
 def predict(model: Pipeline, X: pd.DataFrame) -> np.ndarray:
     """Predict the number of rings of abalones.
 
@@ -19,6 +21,7 @@ def predict(model: Pipeline, X: pd.DataFrame) -> np.ndarray:
     return model.predict(X)
 
 
+@task(name="Evaluate predictions")
 def evaluate_predictions(y_true: pd.Series, y_pred: np.ndarray) -> dict[str, float]:
     """Compute the regression metrics of the predictions.
 
