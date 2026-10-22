@@ -85,3 +85,12 @@ secrets/*
 
 # Mac files
 .DS_Store
+
+# Data (download it from Kaggle, see README)
+data/*
+!data/.gitkeep
+
+# MLflow tracking data
+mlruns/
+mlartifacts/
+mlflow.db

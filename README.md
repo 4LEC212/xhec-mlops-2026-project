@@ -2,197 +2,114 @@
 
 # MLOps Project: Abalone Age Prediction
 
-[![Python Version](https://img.shields.io/badge/python-3.10%20or%203.11-blue.svg)]()
+[![CI](https://github.com/4LEC212/xhec-mlops-2026-project/actions/workflows/ci.yaml/badge.svg)](https://github.com/4LEC212/xhec-mlops-2026-project/actions/workflows/ci.yaml)
+[![Python Version](https://img.shields.io/badge/python-3.11-blue.svg)]()
 [![Linting: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-informational?logo=pre-commit&logoColor=white)](https://github.com/artefactory/xhec-mlops-project-student/blob/main/.pre-commit-config.yaml)
+[![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-informational?logo=pre-commit&logoColor=white)](.pre-commit-config.yaml)
 </div>
 
 ## 🎯 Project Overview
 
-Welcome to your MLOps project! In this hands-on project, you'll build a complete machine learning system to predict the age of abalone (a type of sea snail) using physical measurements instead of the traditional time-consuming method of counting shell rings under a microscope.
+Determining the age of an abalone (a sea snail) traditionally requires cutting its shell, staining it and counting
+its rings under a microscope. This project predicts the age **from physical measurements that are quick to take**,
+and turns the model into a production-ready system:
 
-**Your Mission**: Transform a simple ML model into a production-ready system with automated training, deployment, and prediction capabilities.
+- 📓 **Exploration and experiments**: EDA and model comparison notebooks, experiments tracked with MLflow
+- 🤖 **Automated training pipeline**: Prefect flow (load → clean → split → train → evaluate → save) and a Prefect
+  deployment retraining the model every week
+- 🌐 **Prediction API**: FastAPI app with Pydantic input validation, containerized with Docker
 
-## 📊 About the Dataset
+## 👥 Team
 
-Traditionally, determining an abalone's age requires:
-1. Cutting the shell through the cone
-2. Staining it 
-3. Counting rings under a microscope (very time-consuming!)
+| Name | GitHub |
+|---|---|
+| Alec Seugnet | [@4LEC212](https://github.com/4LEC212) |
+| Simone Capizzi | [@FRATM2002](https://github.com/FRATM2002) |
+| Korouhanba Khuman Laikhuram | [@laikhuramkorouhanba](https://github.com/laikhuramkorouhanba) |
+| Tom Weinberg | [@tomwbrg](https://github.com/tomwbrg) |
 
-**Your Goal**: Use easier-to-obtain physical measurements (shell weight, diameter, etc.) to predict the age automatically.
+## 📊 Dataset
 
-📥 **Download**: Get the dataset from the [Kaggle page](https://www.kaggle.com/datasets/rodolfomendes/abalone-dataset)
+[Kaggle - Abalone dataset](https://www.kaggle.com/datasets/rodolfomendes/abalone-dataset) (originally from the UCI
+Machine Learning Repository): 4,177 abalones described by 8 features. The continuous measurements were divided by
+200 by the dataset authors (lengths in mm, weights in grams).
 
+| Feature | Description |
+|---|---|
+| `Sex` | M (male), F (female) or I (infant) |
+| `Length` | Longest shell measurement |
+| `Diameter` | Shell diameter, perpendicular to the length |
+| `Height` | Height, with the meat in the shell |
+| `Whole weight` | Weight of the whole abalone |
+| `Shucked weight` | Weight of the meat |
+| `Viscera weight` | Gut weight, after bleeding |
+| `Shell weight` | Weight of the shell, after drying |
+| **`Rings`** | **Target**: number of rings. The age in years is `Rings + 1.5` |
 
-## 🚀 Quick Start
+## 🚀 Setup
 
 ### Prerequisites
-- GitHub account
-- [Kaggle account](https://www.kaggle.com/account/login?phase=startRegisterTab&returnUrl=%2F) (for dataset download)
-- Python 3.10 or 3.11
 
-### Setup Steps
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (it installs Python 3.11 for you if needed)
 
-1. **Fork this repository** 
-   - ⚠️ **Important**: Uncheck "Copy the `main` branch only" to get all project branches
-   
-2. **Add your team members** as admins to your forked repository
-
-3. **Set up your development environment**:
-   ```bash
-   # Create and activate a virtual environment
-   uv sync 
-   source venv/bin/activate # on Windows: venv\Scripts\activate
-
-   # Install pre-commit hooks for code quality
-    uv pip install pre-commit
-    uv run pre-commit install
-   ```
-
-## 📋 What You'll Build
-
-By the end of this project, you'll have created:
-
-### 🤖 **Automated ML Pipeline** 
-- Training workflows using Prefect
-- Automatic model retraining on schedule
-- Reproducible model and data processing
-
-### 🌐 **Prediction API**
-- REST API for real-time predictions
-- Input validation with Pydantic
-- Docker containerization
-
-### 📊 **Production-Ready Code**
-- Clean, well-documented code
-- Automated testing and formatting
-- Proper error handling 
-
-## 📝 How to Work on This Project
-
-### The Branch-by-Branch Approach
-
-This project is organized into numbered branches, each representing a step in building your MLOps system. Think of it like a guided tutorial where each branch teaches you something new!
-
-**Here's how it works**:
-
-1. **Each branch = One pull request** with specific tasks
-2. **Follow the numbers** (branch_0, branch_1, etc.) in order
-3. **Read the PR instructions** (PR_0.md, PR_1.md, etc.) before starting
-4. **Complete all TODOs** in that branch's code
-5. **Create a pull request** when done
-6. **Merge and move to the next branch**
-
-### Step-by-Step Workflow
-
-For each numbered branch:
+### Installation
 
 ```bash
-# Switch to the branch
-git checkout branch_number_i
-
-# Get latest changes (except for branch_0)
-git pull origin main
-# Note: A VIM window might open - just type ":wq" to close it
-
-# Push your branch
-git push
-```
-
-Then:
-1. 📖 Read the PR_i.md file carefully
-2. 💻 Complete all the TODOs in the code  
-3. 🔧 Test your changes
-4. 📤 Open **ONE** pull request to your main branch
-5. ✅ Merge the pull request
-6. 🔄 Move to the next branch
-
-> **💡 Pro Tip**: Always integrate your previous work when starting a new branch (except branch_0)!
-
-### 🔍 Understanding Pull Requests
-
-Pull Requests (PRs) are how you propose and review changes before merging them into your main codebase. They're essential for team collaboration!
-
-**Important**: When creating a PR, make sure you're merging into YOUR forked repository, not the original:
-
-❌ **Wrong** (merging to original repo):
-![PR Wrong](assets/PR_wrong.png)
-
-✅ **Correct** (merging to your fork):
-![PR Right](assets/PR_right.png)
-
-## 💡 Development Tips
-
-### Managing Dependencies
-
-Use uv to manage dependencies. Install or update packages with:
-
-```bash
-uv add <package>==<version>
-```
-
-Then sync the environment and regenerate the dependency files:
-
-```bash
+# Create the virtual environment (.venv) and install the dependencies
 uv sync
+source .venv/bin/activate  # on Windows: .venv\Scripts\activate
+
+# Install the pre-commit hooks (ruff linting and formatting, file checks, lockfile check)
+uv run pre-commit install
 ```
 
-### Code Quality
-- The pre-commit hooks will automatically format your code
-- Remove all TODOs and unused code before final submission
-- Use clear variable names and add docstrings
+Dependencies are pinned in `pyproject.toml` and locked in `uv.lock`. Add a new one with
+`uv add <package>==<version>` (`--dev` for development tools, `--group app` for the API).
 
-## 📊 Evaluation Criteria
+### Get the data
 
-Your project will be evaluated on:
+Download the dataset from the [Kaggle page](https://www.kaggle.com/datasets/rodolfomendes/abalone-dataset) and put
+`abalone.csv` in the `data/` folder, or use the Kaggle CLI (requires a
+[Kaggle API token](https://www.kaggle.com/docs/api)):
 
-### 🔍 **Code Quality** 
-- Clean, readable code structure
-- Proper naming conventions  
-- Good use of docstrings and type hints
+```bash
+uvx kaggle datasets download -d rodolfomendes/abalone-dataset -p data --unzip
+```
 
-### 🎨 **Code Formatting**
-- Consistent style (automated with pre-commit)
-- Professional presentation
+## 📓 1. Exploration and Experiments
 
-### ⚙️ **Functionality** 
-- Code runs without errors
-- All requirements implemented correctly
+The notebooks can be run with VS Code / Jupyter using the `.venv` kernel, or with
+`uv run --with jupyter jupyter lab`.
 
-### 📖 **Documentation & Reproducibility**
-- Clear README with setup instructions
-- Team member names and GitHub usernames
-- Step-by-step instructions to run everything
+- [`notebooks/eda.ipynb`](notebooks/eda.ipynb): data quality, target distribution, effect of the sex, correlations
+  and anomalies (4 impossible heights removed).
+- [`notebooks/modelling.ipynb`](notebooks/modelling.ipynb): comparison of 6 models (5-fold cross-validation and
+  test set), every run tracked with MLflow. To browse the experiments:
 
-### 🤝 **Collaboration**
-- Effective use of Pull Requests
-- Good teamwork and communication
+  ```bash
+  cd notebooks
+  uv run mlflow ui --backend-store-uri sqlite:///mlflow.db  # then open http://127.0.0.1:5000
+  ```
 
----
+## 📈 Model Performance
 
-## 🎯 Final Deliverables Checklist
+Test set (20% of the data, 835 abalones):
 
-When you're done, your repository should contain:
+| Model | CV RMSE | Test RMSE | Test MAE | Test R² | Size |
+|---|---|---|---|---|---|
+| Mean baseline | 3.16 | 3.46 | 2.54 | 0.00 | 2 KB |
+| Linear regression | 2.18 | 2.23 | 1.58 | 0.59 | 2 KB |
+| Random forest | 2.13 | 2.20 | 1.52 | 0.60 | 14 MB |
+| **Gradient boosting (selected)** | 2.17 | **2.19** | 1.52 | **0.60** | 0.4 MB |
 
-✅ **Automated Training Pipeline**
-- [ ] Prefect workflows for model training
-- [ ] Separate modules for training and inference  
-- [ ] Reproducible model and encoder generation
+The gradient boosting model was selected: its accuracy matches the random forest's (the difference is within the
+cross-validation noise), and it is about 35 times lighter to version and ship in the Docker image. The predictions
+are off by about 1.5 years on average; old abalones are underestimated.
 
-✅ **Automated Deployment**  
-- [ ] Prefect deployment for regular retraining
+## ✅ Code Quality
 
-✅ **Production API**
-- [ ] Working REST API for predictions
-- [ ] Pydantic input validation
-- [ ] Docker containerization
+```bash
+uv run pre-commit run --all-files      # ruff linting and formatting, file checks, lockfile check
+```
 
-✅ **Professional Documentation**
-- [ ] Updated README with team info
-- [ ] Clear setup and run instructions
-- [ ] All TODOs removed from code
-
----
-
-**Ready to start? Head to branch_0 and read PR_0.md for your first task! 🚀**
+The CI ([`.github/workflows/ci.yaml`](.github/workflows/ci.yaml)) runs the pre-commit hooks on every push and pull request.
