@@ -91,6 +91,16 @@ The notebooks can be run with VS Code / Jupyter using the `.venv` kernel, or wit
   uv run mlflow ui --backend-store-uri sqlite:///mlflow.db  # then open http://127.0.0.1:5000
   ```
 
+## 🤖 2. Training Pipeline
+
+The training pipeline loads and cleans the data, trains the model, logs its test metrics and saves the fitted
+pipeline (one-hot encoder + model) to `src/web_service/local_objects/model.pkl`. Training is reproducible (fixed
+random seeds).
+
+```bash
+uv run python -m src.modelling.main data/abalone.csv
+```
+
 ## 📈 Model Performance
 
 Test set (20% of the data, 835 abalones):
@@ -106,10 +116,11 @@ The gradient boosting model was selected: its accuracy matches the random forest
 cross-validation noise), and it is about 35 times lighter to version and ship in the Docker image. The predictions
 are off by about 1.5 years on average; old abalones are underestimated.
 
-## ✅ Code Quality
+## ✅ Code Quality and Tests
 
 ```bash
+uv run pytest                          # unit tests (pipeline, Prefect flow, API) on synthetic data
 uv run pre-commit run --all-files      # ruff linting and formatting, file checks, lockfile check
 ```
 
-The CI ([`.github/workflows/ci.yaml`](.github/workflows/ci.yaml)) runs the pre-commit hooks on every push and pull request.
+The CI ([`.github/workflows/ci.yaml`](.github/workflows/ci.yaml)) runs both on every push and pull request.
