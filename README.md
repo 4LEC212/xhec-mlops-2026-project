@@ -238,7 +238,8 @@ uv run pytest                          # unit tests (pipeline, Prefect flow, API
 uv run pre-commit run --all-files      # ruff linting and formatting, file checks, lockfile check
 ```
 
-The CI ([`.github/workflows/ci.yaml`](.github/workflows/ci.yaml)) runs both on every push and pull request.
+The CI ([`.github/workflows/ci.yaml`](.github/workflows/ci.yaml)) runs both on every push and pull request, then
+builds the Docker image and checks that the API answers `/predict` and that the Prefect server is up.
 
 ## 🎯 Deliverables Checklist
 
