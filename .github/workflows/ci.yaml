@@ -28,3 +28,31 @@ jobs:
 
       - name: Run tests
         run: uv run pytest
+
+  docker:
+    name: Docker image
+    needs: CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build the image
+        run: docker build -t abalone-api -f Dockerfile.app .
+
+      - name: Start the API and the Prefect server
+        run: docker run -d --name abalone-api -p 8000:8001 -p 4200:4201 abalone-api
+
+      - name: Test the API and the Prefect server
+        run: |
+          curl --fail --silent --retry 30 --retry-all-errors --retry-delay 2 http://localhost:8000/
+          curl --fail --silent -X POST http://localhost:8000/predict \
+            -H "Content-Type: application/json" \
+            -d '{"sex": "F", "length": 0.53, "diameter": 0.42, "height": 0.135, "whole_weight": 0.677,
+                 "shucked_weight": 0.2565, "viscera_weight": 0.1415, "shell_weight": 0.21}' \
+            | jq -e '.rings > 0 and .age > 0'
+          curl --fail --silent --retry 30 --retry-all-errors --retry-delay 2 http://localhost:4200/api/health
+
+      - name: Show the container logs
+        if: failure()
+        run: docker logs abalone-api
